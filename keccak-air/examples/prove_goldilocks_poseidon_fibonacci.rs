@@ -109,15 +109,15 @@ fn main() -> Result<(), VerificationError> {
     // 3..6
     // 1 1 2
     // 1 2 3
+    let mut values: Vec<Vec<u64>> = Vec::with_capacity(64);
+    values.push(vec![1, 1, 2]);
+    for i in 1..64 {
+        values.push(vec![values[i-1][1], values[i-1][2], values[i-1][1] + values[i-1][2]]);
+    }
     let trace = RowMajorMatrix {
-        values: vec![
-            Goldilocks::from_canonical_u64(1u64),
-            Goldilocks::from_canonical_u64(1u64),
-            Goldilocks::from_canonical_u64(2u64),
-            Goldilocks::from_canonical_u64(1u64),
-            Goldilocks::from_canonical_u64(2u64),
-            Goldilocks::from_canonical_u64(3u64),
-        ],
+        values:
+            values.into_iter().flatten().map(|x| Val::from_canonical_u64(x)).collect::<Vec<_>>()
+        ,
         width: 3,
     };
     let fri_config = FriConfig {
